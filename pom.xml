@@ -12,6 +12,7 @@
         <module>bukkit</module>
         <module>moblib</module>
         <module>dynmap</module>
+        <module>register</module>
     </modules>
 
     <build>
