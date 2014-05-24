@@ -41,9 +41,9 @@ can use the following development perk DB information for now:
 8. Launch server, hopefully it will start without any errors.
 
 
-Installing CivCraft dynmap
+Installing CivCraft Dynmap
 ==
-1. Install dynmap plugin.
+1. Install Dynmap plugin.
 
 2. Drop dynmap/target/civcraft-dynmap-1.0.jar into plugins directroy.
 
