@@ -50,7 +50,7 @@
                             </relocations>
                             <artifactSet>
                                 <includes>
-                                    <include>bonecp:*</include>
+                                    <include>com.jolbox:bonecp</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
