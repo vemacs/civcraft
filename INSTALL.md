@@ -47,6 +47,6 @@ Installing CivCraft Dynmap
 ==
 1. Install Dynmap plugin.
 
-2. Drop `dynmap/target/civcraft-dynmap-1.0.jar` into plugins directroy.
+2. Drop `dynmap/target/civcraft-dynmap-1.0.jar` into plugins directory.
 
 
