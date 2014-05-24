@@ -7,7 +7,7 @@ In addition to the CivCraft game this plugin also includes a multi-server ban an
 
 Installation Instructions
 ==========================
-See INSTALL.txt
+See INSTALL.md
 
 Credits
 =======
