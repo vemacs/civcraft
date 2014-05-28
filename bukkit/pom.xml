@@ -52,6 +52,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.jolbox:bonecp</include>
+                                    <include>org.slf4j:slf4j-api</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
