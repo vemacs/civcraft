@@ -50,6 +50,7 @@ public class PvPListener implements Listener {
 			}
 		}
 		if ((event.getEntity() instanceof Player) && !event.isCancelled()) {
+            if (!(event.getDamager() instanceof Player)) return;
 			Player damager = (Player) event.getDamager();
 			Player defendingPlayer = (Player) event.getEntity();
 			Resident defendingResident = CivGlobal.getResident(defendingPlayer);
