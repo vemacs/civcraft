@@ -18,10 +18,33 @@
  */
 package com.avrgaming.civcraft.listener;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
+import com.avrgaming.civcraft.config.CivSettings;
+import com.avrgaming.civcraft.config.ConfigTechPotion;
+import com.avrgaming.civcraft.items.units.Unit;
+import com.avrgaming.civcraft.items.units.UnitItemMaterial;
+import com.avrgaming.civcraft.items.units.UnitMaterial;
+import com.avrgaming.civcraft.lorestorage.LoreMaterial;
+import com.avrgaming.civcraft.main.CivData;
+import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
+import com.avrgaming.civcraft.object.CultureChunk;
+import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.road.Road;
+import com.avrgaming.civcraft.structure.Capitol;
+import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
+import com.avrgaming.civcraft.threading.tasks.PlayerLoginAsyncTask;
+import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
+import com.avrgaming.civcraft.util.BlockCoord;
+import com.avrgaming.civcraft.util.ChunkCoord;
+import com.avrgaming.civcraft.util.CivColor;
+import com.avrgaming.civcraft.util.ItemManager;
+import com.avrgaming.civcraft.war.War;
+import com.avrgaming.civcraft.war.WarStats;
+import com.avrgaming.global.bans.BanCheckOnJoinTask;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
@@ -58,38 +81,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.config.ConfigTechPotion;
-import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.items.units.Unit;
-import com.avrgaming.civcraft.items.units.UnitItemMaterial;
-import com.avrgaming.civcraft.items.units.UnitMaterial;
-import com.avrgaming.civcraft.lorestorage.LoreMaterial;
-import com.avrgaming.civcraft.main.CivData;
-import com.avrgaming.civcraft.main.CivGlobal;
-import com.avrgaming.civcraft.main.CivLog;
-import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
-import com.avrgaming.civcraft.object.CultureChunk;
-import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.road.Road;
-import com.avrgaming.civcraft.structure.Capitol;
-import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
-import com.avrgaming.civcraft.threading.tasks.PlayerLoginAsyncTask;
-import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
-import com.avrgaming.civcraft.util.BlockCoord;
-import com.avrgaming.civcraft.util.ChunkCoord;
-import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.civcraft.war.War;
-import com.avrgaming.civcraft.war.WarStats;
-import com.avrgaming.global.bans.BanCheckOnJoinTask;
-import com.dthielke.herochat.ChannelChatEvent;
-import com.dthielke.herochat.Chatter;
-import com.dthielke.herochat.Chatter.Result;
-import com.dthielke.herochat.Herochat;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -165,39 +159,6 @@ public class PlayerListener implements Listener {
 		}
 		
 	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onChannelChatEvent(ChannelChatEvent event) {
-		Resident resident = CivGlobal.getResident(event.getSender().getName());
-		if (resident == null) {
-			event.setResult(Result.FAIL);
-			return;
-		}
-		
-		if (!resident.isInteractiveMode()) {
-			if (resident.isMuted()) {
-				event.setResult(Result.MUTED);
-				return;
-			}
-		}
-		
-		if (event.getChannel().getDistance() > 0) {
-			for (String name : Resident.allchatters) {
-				Player player;
-				try {
-					player = CivGlobal.getPlayer(name);
-				} catch (CivException e) {
-					continue;
-				}
-				
-				Chatter you = Herochat.getChatterManager().getChatter(player);
-				if (!event.getSender().isInRange(you, event.getChannel().getDistance())) {
-					player.sendMessage(CivColor.White+event.getSender().getName()+"[Far]: "+event.getMessage());
-				}
-			}
-		}
-	}
-	
 	
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
@@ -616,9 +577,5 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 }

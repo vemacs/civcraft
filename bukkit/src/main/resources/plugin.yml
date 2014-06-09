@@ -1,7 +1,7 @@
 name: CivCraft
 main: com.avrgaming.civcraft.main.CivCraft
 version: 1.0
-depend: [Herochat, TagAPI]
+softdepend: [Herochat, TagAPI, NoCheatPlus]
 
 commands:
     town:

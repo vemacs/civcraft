@@ -1,5 +1,7 @@
 package com.avrgaming.civcraft.sessiondb;
 
+import com.avrgaming.civcraft.database.SQL;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,15 +12,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.avrgaming.civcraft.database.SQL;
-
 public class SessionDBAsyncTimer implements Runnable {
 
 	private static final int UPDATE_AMOUNT = 30;
 	public static ReentrantLock lock = new ReentrantLock();
-	public static Queue<SessionAsyncRequest> requestQueue = new LinkedList<SessionAsyncRequest>();
+	public static Queue<SessionAsyncRequest> requestQueue = new LinkedList<>();
 	
-	
+    @SuppressWarnings("resource")
 	@Override
 	public void run() {
 		
@@ -94,7 +94,6 @@ public class SessionDBAsyncTimer implements Runnable {
 				}
 			}
 		}
-		
 	}
 	
 	public void performAdd(SessionAsyncRequest request, Connection cntx) throws Exception {
@@ -123,8 +122,6 @@ public class SessionDBAsyncTimer implements Runnable {
 		}
 		res.close();
 		s.close();
-	
-		return;
 	}
 	
 	private void performUpdate(SessionAsyncRequest request, Connection cntx) throws Exception {
@@ -139,8 +136,6 @@ public class SessionDBAsyncTimer implements Runnable {
 		if (rs == 0) {
 			throw new Exception("Could not execute SQL code:"+code+" value="+request.entry.value+" reqid="+request.entry.request_id);
 		}
-		
-		return;		
 	}
 
 	private void performUpdateInsert(SessionAsyncRequest request, Connection cntx) throws Exception { 
@@ -155,8 +150,6 @@ public class SessionDBAsyncTimer implements Runnable {
 		if (rs == 0) {
 			throw new Exception("Could not execute SQL code:"+code);
 		}
-		
-		return;		
 	}
 
 	private void performDeleteAll(SessionAsyncRequest request, Connection cntx) throws Exception {
@@ -165,10 +158,7 @@ public class SessionDBAsyncTimer implements Runnable {
 		s.setString(1, request.entry.key);
 		s.executeUpdate();
 		s.close();
-
-		return;		
 	}
-
 
 	private void performDelete(SessionAsyncRequest request, Connection cntx) throws Exception {
 		String code;
@@ -182,8 +172,5 @@ public class SessionDBAsyncTimer implements Runnable {
 		if (rs == 0) {
 			throw new Exception("Could not execute SQL code:"+code+" where entry id:"+request.entry.request_id);
 		}
-	
-		return;		
 	}
-
 }
