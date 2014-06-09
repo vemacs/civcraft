@@ -18,16 +18,6 @@
  */
 package com.avrgaming.civcraft.database;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -58,11 +48,20 @@ import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.BiomeCache;
-import com.avrgaming.global.bans.BanManager;
 import com.avrgaming.global.perks.PerkManager;
 import com.avrgaming.global.reports.ReportManager;
 import com.avrgaming.global.scores.ScoreManager;
 import com.jolbox.bonecp.Statistics;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class SQL {
 	
@@ -176,7 +175,6 @@ public class SQL {
 		ArenaTeam.init();
 					
 		CivLog.heading("Building Global Tables!!");
-		BanManager.init();
 		ReportManager.init();
 		ScoreManager.init();
 		

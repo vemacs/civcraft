@@ -35,7 +35,6 @@ import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
 import com.avrgaming.civcraft.threading.tasks.PlayerLoginAsyncTask;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.util.BlockCoord;
@@ -44,7 +43,6 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarStats;
-import com.avrgaming.global.bans.BanCheckOnJoinTask;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
@@ -61,7 +59,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -115,12 +112,6 @@ public class PlayerListener implements Listener {
 		CivGlobal.playerFirstLoginMap.put(event.getPlayer().getName(), new Date());
 		PlayerLocationCacheUpdate.playerQueue.add(event.getPlayer().getName());
 		MobSpawnerTimer.playerQueue.add((event.getPlayer().getName()));
-				
-		TaskMaster.asyncTask(new BanCheckOnJoinTask(event.getPlayer().getName()), 0);
-		//CustomItemManager.removeUnwantedVanillaItems(event.getPlayer(), event.getPlayer().getInventory());
-		
-		// Secret codes to disable Zan's minimap radar/cave modes.
-
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -130,34 +121,6 @@ public class PlayerListener implements Listener {
 			CivLog.info("[TELEPORT] "+event.getPlayer().getName()+" to:"+event.getTo().getBlockX()+","+event.getTo().getBlockY()+","+event.getTo().getBlockZ()+
 					" from:"+event.getFrom().getBlockX()+","+event.getFrom().getBlockY()+","+event.getFrom().getBlockZ());
 		}
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerAsyncChat(AsyncPlayerChatEvent event) {
-
-		long milliseconds_to_ban = 60*1000; //first min.		
-		if (CivGlobal.banWordsActive) {
-			for (String word : CivGlobal.banWords) {
-				if (event.getMessage().toLowerCase().contains(word)) {
-					Date date = new Date();
-					
-					
-					Date firstLogin = CivGlobal.playerFirstLoginMap.get(event.getPlayer().getName());
-					
-					if ((firstLogin.getTime() + milliseconds_to_ban) > date.getTime() || CivGlobal.banWordsAlways) {
-						TaskMaster.syncTask(new PlayerKickBan(event.getPlayer().getName(), true, true, 
-								"You've been auto banned by our troll detector. Appeal at http://civcraft.net"));
-						return;
-					}
-				}
-			}
-		}
-		
-		Resident resident = CivGlobal.getResident(event.getPlayer());
-		if (resident == null) {
-			return;
-		}
-		
 	}
 	
 	private void setModifiedMovementSpeed(Player player) {

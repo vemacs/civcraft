@@ -18,10 +18,6 @@
  */
 package com.avrgaming.civcraft.threading.tasks;
 
-import java.util.ArrayList;
-
-import org.bukkit.entity.Player;
-
 import com.avrgaming.anticheat.ACManager;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndConditionDiplomacy;
@@ -42,6 +38,9 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.global.perks.PlatinumManager;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
 
 public class PlayerLoginAsyncTask implements Runnable {
 
@@ -88,11 +87,6 @@ public class PlayerLoginAsyncTask implements Runnable {
 		
 		if (!resident.isGivenKit()) {
 			TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
-		}
-		
-		if (resident.isBanned()) {
-			TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, resident.getBannedMessage()));
-			return;
 		}
 		
 		if (War.isWarTime() && War.isOnlyWarriors()) {
@@ -216,7 +210,4 @@ public class PlayerLoginAsyncTask implements Runnable {
 
 		
 	}
-	
-
-
 }

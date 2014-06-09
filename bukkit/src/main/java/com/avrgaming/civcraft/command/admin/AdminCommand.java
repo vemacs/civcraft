@@ -18,18 +18,6 @@
  */
 package com.avrgaming.civcraft.command.admin;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.command.ReportChestsTask;
 import com.avrgaming.civcraft.command.ReportPlayerInventoryTask;
@@ -54,6 +42,17 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class AdminCommand extends CommandBase {
 
@@ -299,7 +298,6 @@ public class AdminCommand extends CommandBase {
 			Resident resident = CivGlobal.getResident(offplayer.getName());
 			if (resident != null) {
 				resident.setBanned(false);
-				resident.setBannedMessage("");
 				resident.save();
 			}
 			CivMessage.sendSuccess(sender, "Unbanned "+args[1]);

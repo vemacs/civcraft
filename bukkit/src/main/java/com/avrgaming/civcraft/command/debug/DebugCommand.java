@@ -18,44 +18,6 @@
  */
 package com.avrgaming.civcraft.command.debug;
 
-import gpl.AttributeUtil;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.Effect;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.command.admin.AdminTownCommand;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -116,10 +78,41 @@ import com.avrgaming.civcraft.util.FireworkEffectPlayer;
 import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
-import com.avrgaming.global.bans.BanAsyncTask;
 import com.avrgaming.global.perks.NotVerifiedException;
 import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.PerkManager;
+import gpl.AttributeUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Color;
+import org.bukkit.Effect;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DebugCommand extends CommandBase {
 
@@ -1016,44 +1009,6 @@ public class DebugCommand extends CommandBase {
 		
 		CivGlobal.processCulture();
 		CivMessage.sendSuccess(sender, "Set all town culture to "+culture+" points.");
-	}
-	
-	public void loadbans_cmd() {
-		
-		CivMessage.send(sender, "Looking through "+Bukkit.getBannedPlayers().size()+" players.");
-		int i = 0;
-		for (OfflinePlayer offplayer : Bukkit.getBannedPlayers()) {
-			if (offplayer.isBanned()) {
-				i++;
-				TaskMaster.asyncTask(new BanAsyncTask(sender, offplayer.getName(), "Banned!", 0), 0);
-			}
-		}
-		
-		String path = "plugins/CommandBook/bans.csv";
-		File bans = new File(path);
-		if (bans.exists()) {
-			try {
-				BufferedReader br = new BufferedReader(new FileReader(bans));
-				String line;
-				while ((line = br.readLine()) != null) {
-					
-					String[] split = line.split(",");
-					
-					String name = split[0].replace("\"", "");
-					TaskMaster.asyncTask(new BanAsyncTask(sender, name, "Banned!", 0), 0);
-
-				}
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-		} else {
-			CivMessage.send(sender, "No commandbook bans!!!!");
-		}
-		
-		
-		CivMessage.send(sender, "Banned "+i+" players.");
 	}
 	
 	public void quickcodereload_cmd() {

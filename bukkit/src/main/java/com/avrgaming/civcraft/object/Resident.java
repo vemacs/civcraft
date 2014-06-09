@@ -18,37 +18,6 @@
  */
 package com.avrgaming.civcraft.object;
 
-import gpl.InventorySerializer;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
-
 import com.avrgaming.civcraft.arena.Arena;
 import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
@@ -82,13 +51,41 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.PlayerBlockChangeUtil;
 import com.avrgaming.civcraft.util.SimpleBlock;
-import com.avrgaming.global.bans.BanManager;
 import com.avrgaming.global.perks.NotVerifiedException;
 import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.PerkManager;
 import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
+import gpl.InventorySerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Resident extends SQLObject {
 
@@ -115,7 +112,6 @@ public class Resident extends SQLObject {
 	private String timezone;
 	
 	private boolean banned = false;
-	private String bannedMessage = "You are banned. You may issue an appeal at http://civcraft.net/support";
 	
 	private long registered;
 	private long lastOnline;
@@ -1023,14 +1019,6 @@ public class Resident extends SQLObject {
 		this.banned = banned;
 	}
 
-	public String getBannedMessage() {
-		return bannedMessage;
-	}
-
-	public void setBannedMessage(String bannedMessage) {
-		this.bannedMessage = bannedMessage;
-	}
-
 	public double getSpyExposure() {
 		return spyExposure;
 	}
@@ -1248,18 +1236,6 @@ public class Resident extends SQLObject {
 
 	
 	public boolean isMuted() {
-		if (this.muted == true && this.muteExpires != null) {
-			Date now = new Date();
-			if (now.after(muteExpires)) {
-				this.muted = false;
-				try {
-					BanManager.unmutePlayer(this.getName(), null);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				CivMessage.send(this, CivColor.LightGray+"Your mute has expired. Allowing you to talk now.");
-			}
-		}
 		return muted;
 	}
 
