@@ -45,10 +45,12 @@ import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+import com.avrgaming.civcraft.util.Paginator;
 import com.avrgaming.civcraft.util.PlayerBlockChangeUtil;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.global.perks.NotVerifiedException;
@@ -286,7 +288,7 @@ public class Resident extends SQLObject {
                 CivLog.error("COULD NOT FIND TOWN(" + this.townID + ") FOR RESIDENT(" + this.getId() + ") Name:" +
                              this.getName());
                 /*
-				 * When a town fails to load, we wont be able to find it above.
+                 * When a town fails to load, we wont be able to find it above.
 				 * However this can cause a cascade effect where because we couldn't find
 				 * the town above, we save this resident's town as NULL which wipes
 				 * their town information from the database when the resident gets saved.
@@ -1624,5 +1626,42 @@ public class Resident extends SQLObject {
 
     public void setisProtected(boolean prot) {
         isProtected = prot;
+    }
+
+    public void showPerkPage(int pageNumber) {
+        Player player;
+        try {
+            player = CivGlobal.getPlayer(this);
+        } catch (CivException e) {
+            return;
+        }
+
+        Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE * 9, "Perks");
+        Paginator paginator = new Paginator();
+        paginator.paginate(perks.values(), pageNumber);
+
+        for (Object obj : paginator.page) {
+            Perk p = (Perk) obj;
+            ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, p.configPerk.type_id, p.configPerk.data,
+                                                CivColor.Gold + "<Click To Activate>",
+                                                CivColor.LightBlue + "Count: " + p.count);
+            stack = LoreGuiItem.setAction(stack, "activatePerk:" + p.configPerk.id);
+
+            inv.addItem(stack);
+        }
+
+        if (paginator.hasPrevPage) {
+            ItemStack stack = LoreGuiItem.build("Prev Page", ItemManager.getId(Material.PAPER), 0, "");
+            stack = LoreGuiItem.setAction(stack, "showperkpage:" + (pageNumber - 1));
+            inv.setItem(9 * 5, stack);
+        }
+
+        if (paginator.hasNextPage) {
+            ItemStack stack = LoreGuiItem.build("Next Page", ItemManager.getId(Material.PAPER), 0, "");
+            stack = LoreGuiItem.setAction(stack, "showperkpage:" + (pageNumber + 1));
+            inv.setItem((CivTutorial.MAX_CHEST_SIZE * 9) - 1, stack);
+        }
+
+        player.openInventory(inv);
     }
 }
