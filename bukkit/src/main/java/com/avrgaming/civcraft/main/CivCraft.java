@@ -108,6 +108,7 @@ import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.scores.CalculateScoreTimer;
 import com.avrgaming.moblib.MobLib;
 import com.avrgaming.sls.SLSManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -224,7 +225,7 @@ public final class CivCraft extends JavaPlugin {
         pluginManager.registerEvents(new DisableXPListener(), this);
         pluginManager.registerEvents(new PvPLogger(), this);
         pluginManager.registerEvents(new TradeInventoryListener(), this);
-        pluginManager.registerEvents(new TagAPIListener(), this);
+        if (hasPlugin("TagAPI")) pluginManager.registerEvents(new TagAPIListener(), this);
         if (hasPlugin("Herochat")) pluginManager.registerEvents(new HeroChatListener(), this);
         pluginManager.registerEvents(new MobListener(), this);
         pluginManager.registerEvents(new ArenaListener(), this);
@@ -241,7 +242,7 @@ public final class CivCraft extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        setPlugin(this);
+        CivCraft.plugin = this;
         this.saveDefaultConfig();
 
         CivLog.init(this);
@@ -309,15 +310,16 @@ public final class CivCraft extends JavaPlugin {
         MobSpawner.register();
     }
 
-    private boolean hasPlugin(String name) {
+    public static boolean hasPlugin(String name) {
         Plugin p;
-        p = getServer().getPluginManager().getPlugin(name);
+        p = Bukkit.getServer().getPluginManager().getPlugin(name);
         return p != null;
     }
 
     @Override
     public void onDisable() {
         MobSpawner.despawnAll();
+        CivCraft.plugin = null;
     }
 
     public boolean isError() {
@@ -330,9 +332,5 @@ public final class CivCraft extends JavaPlugin {
 
     public static JavaPlugin getPlugin() {
         return plugin;
-    }
-
-    public static void setPlugin(JavaPlugin plugin) {
-        CivCraft.plugin = plugin;
     }
 }

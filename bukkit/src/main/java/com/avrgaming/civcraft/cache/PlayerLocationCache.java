@@ -18,18 +18,17 @@
  */
 package com.avrgaming.civcraft.cache;
 
+import com.avrgaming.civcraft.config.CivSettings;
+import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.util.BlockCoord;
+import com.avrgaming.civcraft.util.VanishNoPacketUtil;
+import org.bukkit.entity.Player;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.bukkit.entity.Player;
-import org.kitteh.vanish.staticaccess.VanishNoPacket;
-import org.kitteh.vanish.staticaccess.VanishNotLoadedException;
-
-import com.avrgaming.civcraft.main.CivGlobal;
-import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.util.BlockCoord;
 
 public class PlayerLocationCache {
 
@@ -63,12 +62,11 @@ public class PlayerLocationCache {
 		pc.setName(player.getName());
 		pc.setDead(player.isDead());
 		pc.setVanished(false);
-		try {
-			pc.setVanished(VanishNoPacket.isVanished(player.getName()));
-		} catch (VanishNotLoadedException | NoClassDefFoundError e ) {
-			pc.setVanished(false);
-		}
-		
+
+        if (CivSettings.hasVanishNoPacket) {
+            pc.setVanished(VanishNoPacketUtil.isVanished(player));
+        }
+        
 		cache.put(pc.getName(), pc);
 	}
 	
@@ -91,13 +89,12 @@ public class PlayerLocationCache {
 		if (resident != null) {
 			resident.onRoadTest(pc.getCoord(), player);
 		}
-		
-		try {
-			pc.setVanished(VanishNoPacket.isVanished(player.getName()));
-		} catch (VanishNotLoadedException e) {
-			pc.setVanished(false);
-		}
-		pc.setVanished(false);
+
+        if (CivSettings.hasVanishNoPacket) {
+            pc.setVanished(VanishNoPacketUtil.isVanished(player));
+        } else {
+            pc.setVanished(false);
+        }
 	}
 	
 	public static Collection<PlayerLocationCache> getCache() {
